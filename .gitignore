@@ -1,0 +1,33 @@
+# Private credentials
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Python temporary files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Dataset and trained models
+*.csv
+*.joblib
+*.pkl
+
+# MLflow experiment artifacts
+mlflow_artifacts/
+mlflow_backup/
+mlruns/
+*.db
+
+# Temporary files and logs
+*.log
+.ipynb_checkpoints/
+.DS_Store
+
+# Colab backups
+app_backup.py
+app_before_explanation.py
+app_before_input_check.py
