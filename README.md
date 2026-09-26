@@ -1,68 +1,112 @@
-# RetailIQ: AI-Powered Retail Purchase Predictor
+# RetailIQ: AI-Powered Purchase Prediction
 
-RetailIQ predicts whether an online shopping session
-is likely to result in a purchase.
+RetailIQ is an end-to-end machine learning application that predicts whether an online shopper will make a purchase. Users describe a visitor's browsing session in natural language, and the application uses OpenAI to extract relevant features, a trained Random Forest model to predict purchase probability, and AI to explain the result.
 
-## How It Works
+**Live application:** https://retailiq-jpx84eqmuiyuunt8i87vo7.streamlit.app/
 
-1. The user describes a shopping session in natural language.
-2. OpenAI extracts structured shopping-session features.
-3. The application validates the extracted information.
-4. Missing features are filled with training-data defaults.
-5. A trained Random Forest predicts purchase probability.
-6. OpenAI explains the prediction in plain English.
+## Features
 
-Predictions based on incomplete information are illustrative.
+- Natural-language visitor descriptions
+- LLM-powered extraction of 17 shopping-session features
+- Random Forest purchase predictions and probabilities
+- AI-generated explanations
+- Validation of incomplete and invalid inputs
+- Transparent disclosure of features filled with training-data defaults
 
 ## Dataset
 
-UCI Online Shoppers Purchasing Intention Dataset
+UCI Online Shoppers Purchasing Intention dataset, containing 12,330 shopping sessions. The target variable, Revenue, indicates whether a session resulted in a purchase.
 
-- 12,330 shopping sessions
-- 17 input features
-- Target: Revenue (purchase or no purchase)
+## Model and Evaluation
 
-## Machine Learning
+A tuned Random Forest classifier was selected using validation performance. Final evaluation was performed on a held-out test set.
 
-Five model configurations were compared using MLflow.
-
-Selected model: Tuned Random Forest
-
-Final test-set performance:
-
-| Metric | Score |
+| Metric | Test result |
 |---|---:|
 | Accuracy | 0.8670 |
 | Precision | 0.5509 |
 | Recall | 0.7644 |
-| F1 | 0.6404 |
+| F1 score | 0.6404 |
 | ROC-AUC | 0.9146 |
 
-## Technologies
+Five MLflow runs were logged during model development.
 
-- Python
-- pandas
-- scikit-learn
+## Technology
+
+- Python, pandas and NumPy
+- scikit-learn and joblib
 - OpenAI API
 - Streamlit
-- MLflow
-- pytest
+- MLflow for experiment tracking
+- pytest for automated testing
+
+## Run Locally
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/farnazkho/RetailIQ.git
+cd RetailIQ
+```
+
+2. Create a virtual environment using Python 3.11, activate it and install dependencies:
+
+```bash
+python -m venv .venv
+```
+
+On Windows:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+On macOS or Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+Install the requirements:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Set the OPENAI_API_KEY environment variable using your own OpenAI API key. Never commit an actual key to GitHub.
+
+4. Start the app:
+
+```bash
+streamlit run app.py
+```
+
+## Example
+
+Input:
+
+> A returning visitor browsed 20 product pages for 15 minutes on a Saturday.
+
+The deployed application returned a 22.4% purchase probability and a no-purchase prediction. Thirteen unspecified features were filled using training-data defaults. Results depend on the supplied session information and are illustrative.
 
 ## Testing
 
-The project currently has 12 passing automated tests,
-including tests for invalid inputs and simulated
-OpenAI responses.
+The project has 12 passing automated tests. The deployed application was also manually checked using a complete visitor description, an incomplete description and an invalid negative product-page count.
+
+Run automated tests with:
+
+```bash
+pytest -q
+```
 
 ## Limitations
 
-- Predictions depend on the information provided.
-- Missing values are filled using training-data defaults.
-- LLM extraction may occasionally be incorrect.
-- The application is a demonstration, not a production
-  decision-making system.
+- The model was trained on a historical public dataset and has not been validated on live retail traffic.
+- Natural-language descriptions may omit information, requiring default feature values.
+- LLM extraction and explanations may contain errors.
+- Purchase probabilities are estimates, not guarantees.
+- The OpenAI API requires a separately configured key and may incur usage charges.
 
-## Setup
+## Security
 
-Installation instructions and environment configuration
-will be added before GitHub publication.
+API keys must be supplied through environment variables or secure deployment secrets. Do not commit credentials to the repository.
