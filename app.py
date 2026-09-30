@@ -1,6 +1,7 @@
-
 import os
 import json
+import re
+import urllib.request
 from pathlib import Path
 
 import joblib
@@ -14,19 +15,17 @@ from src.prediction_pipeline import (
 )
 
 
-import re
-
-
 def has_negative_page_count(description):
     """Detect explicitly negative product-page counts."""
     patterns = [
-        r"\\bminus\\s+\\d+\\s+(?:product\\s+)?pages?\\b",
-        r"(?<!\\w)-\\s*\\d+\\s+(?:product\\s+)?pages?\\b"
+        r"\bminus\s+\d+\s+(?:product\s+)?pages?\b",
+        r"(?<!\w)-\s*\d+\s+(?:product\s+)?pages?\b"
     ]
     return any(
         re.search(pattern, description, re.IGNORECASE)
         for pattern in patterns
     )
+
 
 st.set_page_config(
     page_title="RetailIQ",
@@ -36,11 +35,24 @@ st.set_page_config(
 
 PROJECT_DIR = Path(__file__).resolve().parent
 
+
 @st.cache_resource
 def load_model():
-    return joblib.load(
-        PROJECT_DIR / "models" / "retailiq_model.joblib"
-    )
+    """Load the model locally or download it from the GitHub Release."""
+    model_path = PROJECT_DIR / "models" / "retailiq_model.joblib"
+
+    if not model_path.exists():
+        model_path.parent.mkdir(parents=True, exist_ok=True)
+
+        model_url = (
+            "https://github.com/farnazkho/RetailIQ/releases/"
+            "download/v1.0.0/retailiq_model.1.joblib"
+        )
+
+        urllib.request.urlretrieve(model_url, model_path)
+
+    return joblib.load(model_path)
+
 
 @st.cache_data
 def load_defaults():
@@ -48,6 +60,7 @@ def load_defaults():
         PROJECT_DIR / "models" / "feature_defaults.json"
     ) as file:
         return json.load(file)
+
 
 st.title("🛍️ RetailIQ")
 st.subheader("AI-Powered Retail Purchase Predictor")
@@ -65,6 +78,7 @@ except Exception:
     st.error("The prediction model could not be loaded.")
     st.stop()
 
+
 description = st.text_area(
     "Describe the shopping session",
     placeholder=(
@@ -74,16 +88,20 @@ description = st.text_area(
     height=150
 )
 
+
 if st.button("Predict Purchase"):
     if not description.strip():
         st.warning("Please describe a shopping session.")
+
     elif has_negative_page_count(description):
         st.warning(
             "Product page count cannot be negative. "
             "Please enter a valid number of pages."
         )
+
     elif not os.getenv("OPENAI_API_KEY"):
         st.error("The OpenAI API key is not configured.")
+
     else:
         with st.spinner("Analyzing the shopping session..."):
             try:
@@ -138,6 +156,7 @@ if st.button("Predict Purchase"):
 
             except ValueError as error:
                 st.warning(str(error))
+
             except Exception:
                 st.error(
                     "Unable to analyze this session. "
