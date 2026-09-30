@@ -1,4 +1,3 @@
-
 from src.interface import predict_purchase
 from tests.test_model import make_test_model
 
@@ -6,7 +5,7 @@ from tests.test_model import make_test_model
 def test_valid_session_prediction():
     """A valid session should return a prediction and probability."""
 
-    model, X = make_test_model()
+    model, X, _ = make_test_model()
 
     result = predict_purchase(model, X.iloc[[0]])
 
@@ -21,9 +20,12 @@ def test_valid_session_prediction():
 def test_empty_session_returns_error():
     """Empty input should return a helpful error."""
 
-    model, X = make_test_model()
+    model, X, _ = make_test_model()
 
     result = predict_purchase(model, X.iloc[0:0])
 
     assert "error" in result
-    assert "Please provide shopping session data" in result["error"]
+    assert (
+        "Please provide shopping session data"
+        in result["error"]
+    )
