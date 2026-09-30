@@ -1,6 +1,8 @@
-
 from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
 
 CATEGORICAL_COLS = [
     "Month",
@@ -12,6 +14,7 @@ CATEGORICAL_COLS = [
     "TrafficType"
 ]
 
+
 def get_preprocessor(feature_columns):
     """Build the RetailIQ preprocessing pipeline."""
 
@@ -20,11 +23,19 @@ def get_preprocessor(feature_columns):
         if col not in CATEGORICAL_COLS
     ]
 
+    numerical_pipeline = Pipeline([
+        ("imputer", SimpleImputer(strategy="median")),
+        ("scaler", StandardScaler())
+    ])
+
+    categorical_pipeline = Pipeline([
+        ("imputer", SimpleImputer(strategy="most_frequent")),
+        ("encoder", OneHotEncoder(handle_unknown="ignore"))
+    ])
+
     return ColumnTransformer(
         transformers=[
-            ("num", StandardScaler(), numerical_cols),
-            ("cat", OneHotEncoder(
-                handle_unknown="ignore"
-            ), CATEGORICAL_COLS)
+            ("num", numerical_pipeline, numerical_cols),
+            ("cat", categorical_pipeline, CATEGORICAL_COLS)
         ]
     )
