@@ -240,3 +240,14 @@ Experiment tracking also became an important part of the project. Moving the mod
 A key lesson from the project was that model performance is only one part of a deployable machine learning system. Reproducible training, testing, secure API-key handling, artifact management, input validation and a usable interface are also necessary parts of an end-to-end ML application.
 
 Future improvements could include testing on newer retail data, expanding the natural-language interface, reducing reliance on default feature values, monitoring prediction quality over time and evaluating additional model families.
+
+
+
+## 🎥 Project Demo
+
+Watch the RetailIQ end-to-end demo here:
+
+https://drive.google.com/file/d/1iI2UZjN6IQxDJTK_9CUlncj3pFk9xp1s/view?usp=sharing
+
+The demo shows a natural-language shopping-session query, the model's purchase prediction and AI-generated explanation, and an edge case with invalid input handling.
+
