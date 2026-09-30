@@ -10,6 +10,12 @@ data:
 
 model:
   type: RandomForestClassifier
+  n_estimators: 300
+  max_depth: 12
+  min_samples_split: 2
+  min_samples_leaf: 5
+  class_weight: balanced
+  n_jobs: -1
   random_state: 42
 
 mlflow:
