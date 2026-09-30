@@ -1,4 +1,3 @@
-
 import json
 from openai import OpenAI
 
@@ -30,20 +29,32 @@ def extract_features(description, feature_names, api_key):
 
         Weekend must be true, false, or null.
 
-        
-Extract only explicitly provided information.
+        Saturday and Sunday mean Weekend = true.
+        Monday, Tuesday, Wednesday, Thursday, and Friday
+        mean Weekend = false.
 
-IMPORTANT: Preserve negative numbers exactly.
-"minus 5 product pages" means ProductRelated = -5,
-NOT 5.
+        Never place a weekday name such as "Saturday"
+        or "Sunday" into any feature field.
+        Weekend must always be a JSON boolean
+        (true or false) or null.
 
-Never correct, normalize, or silently change
-an invalid numerical value.
+        Numeric features must contain only numbers or null.
+        Do not put day names, month names, or other text
+        into numeric feature fields.
 
-For example:
-"minus 5 product pages for 15 minutes"
-means ProductRelated = -5 and
-ProductRelated_Duration = 900.
+        Extract only explicitly provided information.
+
+        IMPORTANT: Preserve negative numbers exactly.
+        "minus 5 product pages" means ProductRelated = -5,
+        NOT 5.
+
+        Never correct, normalize, or silently change
+        an invalid numerical value.
+
+        For example:
+        "minus 5 product pages for 15 minutes"
+        means ProductRelated = -5 and
+        ProductRelated_Duration = 900.
 
         Use null for missing information.
         Never invent website analytics.
